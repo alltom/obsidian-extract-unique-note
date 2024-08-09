@@ -1,11 +1,10 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
-	"version": "1.0.0",
-	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
-	"isDesktopOnly": false
+  "id": "extract-unique-note",
+  "name": "Extract Unique Note",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "Extracts the selection into a unique note.",
+  "author": "Tom Lieber <tom@alltom.com>",
+  "authorUrl": "http://alltom.com/",
+  "isDesktopOnly": false
 }
