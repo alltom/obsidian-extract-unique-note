@@ -26,7 +26,7 @@ export default class MyPlugin extends Plugin {
   getTitleFromSelection(editor: Editor): string {
     return this.getSelection(editor)
       .split("\n")[0]
-      .replace(/\[\[([^\]\|]*)\]\]/gm, "$1")
+      .replace(/\[\[([^\]|]*)\]\]/gm, "$1")
       .replace(/\[\[[^\]]*\|([^\]]*)\]\]/gm, "$1");
   }
 
