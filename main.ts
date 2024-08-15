@@ -45,9 +45,18 @@ tags:
 # ${noteBody}
 `;
 
+    // Make the new file.
     const newFile = await this.app.vault.create(filename, contents);
-    this.app.workspace.getLeaf("split").openFile(newFile, { active: false });
+    const newFileLeaf = this.app.workspace.getLeaf("split");
+
+    // Link to the new file.
     editor.replaceSelection(`[[${timestamp}|${title}]]`);
+
+    // Open the new file.
+    newFileLeaf.openFile(newFile, { active: false });
+    setTimeout(() => {
+      this.app.workspace.setActiveLeaf(newFileLeaf, { focus: true });
+    });
   }
 }
 
