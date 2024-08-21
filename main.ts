@@ -14,7 +14,7 @@ export default class MyPlugin extends Plugin {
           return this.getTitleFromSelection(editor).length > 0;
         }
 
-        void this.extractUniqueNote(editor);
+        void this.extractUniqueNote(editor, view);
       },
     });
   }
@@ -30,13 +30,18 @@ export default class MyPlugin extends Plugin {
       .replace(/\[\[[^\]]*\|([^\]]*)\]\]/gm, "$1");
   }
 
-  async extractUniqueNote(editor: Editor): Promise<void> {
+  async extractUniqueNote(
+    editor: Editor,
+    view: MarkdownView | MarkdownFileInfo,
+  ): Promise<void> {
+    const currentFilename = view.file?.basename;
+
     const timestamp = toLocalTimestamp(new Date());
     const filename = `${timestamp}.md`;
     const title = this.getTitleFromSelection(editor);
     const noteBody = this.getSelection(editor);
 
-    const contents = `---
+    let contents = `---
 aliases:
 - ${title}
 tags:
@@ -44,6 +49,11 @@ tags:
 ---
 # ${noteBody}
 `;
+    if (currentFilename) {
+      contents += `## References
+- [[${currentFilename}]]
+`;
+    }
 
     // Make the new file.
     const newFile = await this.app.vault.create(filename, contents);
