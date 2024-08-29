@@ -39,30 +39,26 @@ export default class MyPlugin extends Plugin {
     const timestamp = toLocalTimestamp(new Date());
     const filename = `${timestamp}.md`;
     const title = this.getTitleFromSelection(editor);
-    const noteBody = this.getSelection(editor);
+    const noteBody = this.getSelection(editor).trim();
 
-    let contents = `---
-aliases:
-- ${title}
-tags:
-- review
----
-# ${noteBody}
-`;
+    let contents = `# ${noteBody}\n`;
     if (currentFilename) {
       contents += `## References
 - [[${currentFilename}]]
 `;
     }
 
-    // Make the new file.
     const newFile = await this.app.vault.create(filename, contents);
-    const newFileLeaf = this.app.workspace.getLeaf("split");
+    this.app.fileManager.processFrontMatter(newFile, (frontmatter) => {
+      frontmatter["tags"] = ["review"];
+      frontmatter["aliases"] = [title];
+    });
 
     // Link to the new file.
     editor.replaceSelection(`[[${timestamp}|${title}]]`);
 
     // Open the new file.
+    const newFileLeaf = this.app.workspace.getLeaf("split");
     newFileLeaf.openFile(newFile, { active: false });
     setTimeout(() => {
       this.app.workspace.setActiveLeaf(newFileLeaf, { focus: true });
