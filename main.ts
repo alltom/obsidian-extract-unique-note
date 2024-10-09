@@ -47,6 +47,10 @@ export default class MyPlugin extends Plugin {
     }
     contents += `${noteBody}\n`;
 
+    contents += `## Inspired notes\n`;
+    contents += `## Raw notes\n`;
+    contents += `## Source material\n`;
+
     const newFile = await this.app.vault.create(filename, contents);
     this.app.fileManager.processFrontMatter(newFile, (frontmatter) => {
       frontmatter["tags"] = ["review"];
