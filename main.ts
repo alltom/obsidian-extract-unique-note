@@ -41,12 +41,11 @@ export default class MyPlugin extends Plugin {
     const title = this.getTitleFromSelection(editor);
     const noteBody = this.getSelection(editor).trim();
 
-    let contents = `# ${noteBody}\n`;
+    let contents = `# `;
     if (currentFilename) {
-      contents += `## References
-- [[${currentFilename}]]
-`;
+      contents += `[[${currentFilename}]]: `;
     }
+    contents += `${noteBody}\n`;
 
     const newFile = await this.app.vault.create(filename, contents);
     this.app.fileManager.processFrontMatter(newFile, (frontmatter) => {
