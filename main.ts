@@ -60,8 +60,8 @@ export default class MyPlugin extends Plugin {
     // Link to the new file.
     editor.replaceSelection(`[[${timestamp}|${title}]]`);
 
-    // Open the new file.
-    const newFileLeaf = this.app.workspace.getLeaf("split");
+    // Open the new file in a new tab.
+    const newFileLeaf = this.app.workspace.getLeaf("tab");
     newFileLeaf.openFile(newFile, { active: false });
     setTimeout(() => {
       this.app.workspace.setActiveLeaf(newFileLeaf, { focus: true });

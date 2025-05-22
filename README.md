@@ -10,10 +10,10 @@ You'll probably be unhappy with this extension without modification. Instead of 
 Effects:
 
 1. Creates a new note with a timestamp name like YYYYMMDDHHMMSS.md.
-   - Replaces the note's body with the selection, prepending "#" so that the first line becomes the note's title.
-   - Adds the "review" tag to the page.
-   - Adds the first line of the page as an alias for the page.
-2. Opens the new note in a new split to the right.
+    - Replaces the note's body with the selection, prepending "#" so that the first line becomes the note's title.
+    - Adds the "review" tag to the page.
+    - Adds the first line of the page as an alias for the page.
+2. Opens the new note in a new tab.
 3. Replaces the original selection with a link to the new note, with the first line as its link text.
 
 ## Development
