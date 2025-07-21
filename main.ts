@@ -50,7 +50,6 @@ export default class MyPlugin extends Plugin {
 
 		const newFile = await this.app.vault.create(filename, contents);
 		this.app.fileManager.processFrontMatter(newFile, (frontmatter) => {
-			frontmatter["tags"] = ["review"];
 			frontmatter["aliases"] = [title];
 		});
 
