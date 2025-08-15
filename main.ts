@@ -11,7 +11,7 @@ export default class MyPlugin extends Plugin {
 				view: MarkdownView | MarkdownFileInfo,
 			) => {
 				if (checking) {
-					return this.getTitleFromSelection(editor).length > 0;
+					return !!this.getTitleFromSelection(editor);
 				}
 
 				void this.extractUniqueNote(editor, view);
@@ -23,11 +23,12 @@ export default class MyPlugin extends Plugin {
 		return editor.getSelection().trim();
 	}
 
-	getTitleFromSelection(editor: Editor): string {
-		return this.getSelection(editor)
+	getTitleFromSelection(editor: Editor): string | undefined {
+		const title = this.getSelection(editor)
 			.split("\n")[0]
 			.replace(/\[\[([^\]|]*)\]\]/gm, "$1")
 			.replace(/\[\[[^\]]*\|([^\]]*)\]\]/gm, "$1");
+		return title ? title : undefined;
 	}
 
 	async extractUniqueNote(editor: Editor, view: MarkdownView | MarkdownFileInfo): Promise<void> {
@@ -49,12 +50,19 @@ export default class MyPlugin extends Plugin {
 		contents += `## Source material\n`;
 
 		const newFile = await this.app.vault.create(filename, contents);
-		this.app.fileManager.processFrontMatter(newFile, (frontmatter) => {
-			frontmatter["aliases"] = [title];
-		});
+
+		if (title) {
+			this.app.fileManager.processFrontMatter(newFile, (frontmatter) => {
+				frontmatter["aliases"] = [title];
+			});
+		}
 
 		// Link to the new file.
-		editor.replaceSelection(`[[${timestamp}|${title}]]`);
+		if (title) {
+			editor.replaceSelection(`[[${timestamp}|${title}]]`);
+		} else {
+			editor.replaceSelection(`[[${timestamp}]]`);
+		}
 
 		// Open the new file in a new tab.
 		const newFileLeaf = this.app.workspace.getLeaf("tab");
