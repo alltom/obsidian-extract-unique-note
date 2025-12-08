@@ -40,9 +40,8 @@ export default class MyPlugin extends Plugin {
 		const noteBody = this.getSelection(editor).trim();
 
 		let contents = `# `;
-		if (currentFilename) {
-			contents += `[[${currentFilename}]]: `;
-		}
+		const linkToParent = currentFilename ? `[[${currentFilename}]]: ` : undefined;
+		if (linkToParent) contents += linkToParent;
 		contents += `${noteBody}\n`;
 
 		const newFile = await this.app.vault.create(filename, contents);
@@ -62,9 +61,26 @@ export default class MyPlugin extends Plugin {
 
 		// Open the new file in a new tab.
 		const newFileLeaf = this.app.workspace.getLeaf("tab");
-		newFileLeaf.openFile(newFile, { active: false });
+		await newFileLeaf.openFile(newFile, { active: false });
 		setTimeout(() => {
 			this.app.workspace.setActiveLeaf(newFileLeaf, { focus: true });
+
+			if (linkToParent) {
+				const view = newFileLeaf.view as MarkdownView;
+				const editor = view.editor;
+				const content = editor.getValue();
+				const index = content.indexOf(linkToParent);
+				if (index === -1) {
+					console.error("could not find link to parent in new note", {
+						content,
+						linkToParent,
+					});
+					return;
+				}
+				const pos = editor.offsetToPos(index);
+				const endPos = editor.offsetToPos(index + linkToParent.length);
+				editor.setSelection(pos, endPos);
+			}
 		});
 	}
 }
