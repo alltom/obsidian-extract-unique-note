@@ -46,11 +46,12 @@ export default class MyPlugin extends Plugin {
 
 		const newFile = await this.app.vault.create(filename, contents);
 
-		if (title) {
-			this.app.fileManager.processFrontMatter(newFile, (frontmatter) => {
+		await this.app.fileManager.processFrontMatter(newFile, (frontmatter) => {
+			if (title) {
 				frontmatter["aliases"] = [title];
-			});
-		}
+			}
+			frontmatter["tags"] = ["daily-inbox"];
+		});
 
 		// Link to the new file.
 		if (title) {
