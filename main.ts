@@ -102,6 +102,9 @@ export default class MyPlugin extends Plugin {
 		const newFileLeaf = this.app.workspace.getLeaf("tab");
 		await newFileLeaf.openFile(newFile, { active: false });
 		this.app.workspace.setActiveLeaf(newFileLeaf, { focus: true });
+
+		const editor = (newFileLeaf.view as MarkdownView).editor;
+		editor.setSelection(editor.offsetToPos(editor.getValue().length));
 	}
 }
 
