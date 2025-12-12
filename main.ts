@@ -17,6 +17,14 @@ export default class MyPlugin extends Plugin {
 				void this.extractUniqueNote(editor, view);
 			},
 		});
+
+		this.addCommand({
+			id: "create-unique-note",
+			name: "Create unique note",
+			editorCallback: (editor: Editor, view: MarkdownView | MarkdownFileInfo) => {
+				void this.createUniqueNote();
+			},
+		});
 	}
 
 	getSelection(editor: Editor): string {
@@ -83,6 +91,17 @@ export default class MyPlugin extends Plugin {
 				editor.setSelection(pos, endPos);
 			}
 		});
+	}
+
+	async createUniqueNote(): Promise<void> {
+		const newFile = await this.app.vault.create(`${toLocalTimestamp(new Date())}.md`, `# `);
+		await this.app.fileManager.processFrontMatter(newFile, (frontmatter) => {
+			frontmatter["tags"] = ["daily-inbox"];
+		});
+
+		const newFileLeaf = this.app.workspace.getLeaf("tab");
+		await newFileLeaf.openFile(newFile, { active: false });
+		this.app.workspace.setActiveLeaf(newFileLeaf, { focus: true });
 	}
 }
 
