@@ -94,7 +94,12 @@ export default class MyPlugin extends Plugin {
 	}
 
 	async createUniqueNote(): Promise<void> {
-		const newFile = await this.app.vault.create(`${toLocalTimestamp(new Date())}.md`, `# `);
+		const now = new Date();
+		const yyyyMmDd = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+		const newFile = await this.app.vault.create(
+			`${toLocalTimestamp(now)}.md`,
+			`[[${yyyyMmDd}]]\n`,
+		);
 		await this.app.fileManager.processFrontMatter(newFile, (frontmatter) => {
 			frontmatter["tags"] = ["daily-inbox"];
 		});
