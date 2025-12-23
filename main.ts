@@ -21,7 +21,7 @@ export default class MyPlugin extends Plugin {
 		this.addCommand({
 			id: "create-unique-note",
 			name: "Create unique note",
-			editorCallback: (editor: Editor, view: MarkdownView | MarkdownFileInfo) => {
+			callback: () => {
 				void this.createUniqueNote();
 			},
 		});
