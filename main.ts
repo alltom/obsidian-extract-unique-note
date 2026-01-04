@@ -1,4 +1,4 @@
-import { Editor, MarkdownView, MarkdownFileInfo, Plugin } from "obsidian";
+import { Editor, MarkdownView, MarkdownFileInfo, parseFrontMatterAliases, Plugin } from "obsidian";
 
 export default class MyPlugin extends Plugin {
 	async onload() {
@@ -39,8 +39,32 @@ export default class MyPlugin extends Plugin {
 		return title ? title : undefined;
 	}
 
+	escapeForWikilink(text: string): string {
+		return text.replace(/[\[\]|]/g, "\\$&");
+	}
+
+	getSourceNoteDisplayName(view: MarkdownView | MarkdownFileInfo): string | undefined {
+		const file = view.file;
+		if (!file) return undefined;
+
+		const cache = this.app.metadataCache.getFileCache(file);
+
+		const aliases = parseFrontMatterAliases(cache?.frontmatter);
+		if (aliases && aliases.length > 0) {
+			return aliases[0];
+		}
+
+		const h1 = cache?.headings?.find((h) => h.level === 1);
+		if (h1) {
+			return h1.heading;
+		}
+
+		return undefined;
+	}
+
 	async extractUniqueNote(editor: Editor, view: MarkdownView | MarkdownFileInfo): Promise<void> {
-		const currentFilename = view.file?.basename;
+		const basename = view.file?.basename;
+		const displayName = this.getSourceNoteDisplayName(view);
 
 		const timestamp = toLocalTimestamp(new Date());
 		const filename = `${timestamp}.md`;
@@ -48,7 +72,11 @@ export default class MyPlugin extends Plugin {
 		const noteBody = this.getSelection(editor).trim();
 
 		let contents = `# `;
-		const linkToParent = currentFilename ? `[[${currentFilename}]]: ` : undefined;
+		const linkToParent = basename
+			? displayName
+				? `[[${basename}|${this.escapeForWikilink(displayName)}]]: `
+				: `[[${basename}]]: `
+			: undefined;
 		if (linkToParent) contents += linkToParent;
 		contents += `${noteBody}\n`;
 
