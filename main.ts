@@ -73,7 +73,7 @@ export default class MyPlugin extends Plugin {
 
 		let contents = `# `;
 		const linkToParent = basename
-			? displayName
+			? displayName && displayName !== basename
 				? `[[${basename}|${this.escapeForWikilink(displayName)}]]: `
 				: `[[${basename}]]: `
 			: undefined;
