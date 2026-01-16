@@ -5,6 +5,7 @@ export default class MyPlugin extends Plugin {
 		this.addCommand({
 			id: "extract-unique-note",
 			name: "Extract unique note",
+			icon: "file-output",
 			editorCheckCallback: (
 				checking: boolean,
 				editor: Editor,
@@ -21,6 +22,7 @@ export default class MyPlugin extends Plugin {
 		this.addCommand({
 			id: "create-unique-note",
 			name: "Create unique note",
+			icon: "file-plus",
 			callback: () => {
 				void this.createUniqueNote();
 			},
