@@ -128,7 +128,7 @@ export default class MyPlugin extends Plugin {
 		const yyyyMmDd = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 		const newFile = await this.app.vault.create(
 			`${toLocalTimestamp(now)}.md`,
-			`[[${yyyyMmDd}]]\n`,
+			`[[${yyyyMmDd}]]\n\n`,
 		);
 		await this.app.fileManager.processFrontMatter(newFile, (frontmatter) => {
 			frontmatter["tags"] = ["daily-inbox"];
